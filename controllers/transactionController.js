@@ -37,7 +37,7 @@ exports.createTransaction = catchAsync(async (req, res, next) => {
     });
 
     await User.findByIdAndUpdate(data.user._id, {
-      $inc: { totalBalance: data.amount * -1 },
+      $inc: { totalBalance: data.amount * -1, totalDeposit: data.amount * 1 },
     });
 
     data.reinvest = false;
@@ -95,7 +95,7 @@ exports.createTransaction = catchAsync(async (req, res, next) => {
       });
 
       await User.findByIdAndUpdate(data.user._id, {
-        $inc: { totalBalance: data.amount * -1 },
+        $inc: { totalBalance: data.amount * -1, totalDeposit: data.amount * 1 },
       });
 
       data.reinvest = true;
@@ -152,7 +152,12 @@ exports.createTransaction = catchAsync(async (req, res, next) => {
 
         await User.findOneAndUpdate(
           { username: data.user.username },
-          { $inc: { totalBalance: req.body.amount * -1 } }
+          {
+            $inc: {
+              totalBalance: req.body.amount * -1,
+              pendingWithdrawal: req.body.amount * 1,
+            },
+          }
         );
       } else {
         await Transaction.create(data);
@@ -160,6 +165,11 @@ exports.createTransaction = catchAsync(async (req, res, next) => {
         await Wallet.findByIdAndUpdate(data.walletId, {
           $inc: { pendingDeposit: data.amount },
         });
+
+        await User.findOneAndUpdate(
+          { username: data.user.username },
+          { $inc: { pendingDeposit: req.body.amount } }
+        );
       }
 
       sendTransactionEmail(data.user, data.transactionType, data.amount, next);
@@ -434,6 +444,12 @@ exports.approveDeposit = catchAsync(async (req, res, next) => {
   req.body.earning = 0;
   const activeDeposit = await Active.create(req.body);
   const user = await User.findOne({ username: req.body.username });
+  await User.findByIdAndUpdate(user._id, {
+    $inc: {
+      totalDeposit: req.body.amount * 1,
+      pendingDeposit: req.body.amount * -1,
+    },
+  });
 
   startActiveDeposit(
     activeDeposit,
@@ -584,6 +600,13 @@ exports.approveWithdrawal = catchAsync(async (req, res, next) => {
   });
 
   const user = await User.findOne({ username: req.body.username });
+  await User.findByIdAndUpdate(user._id, {
+    $inc: {
+      totalWithdrawal: transaction.amount * 1,
+      pendingWithdrawal: transaction.amount * -1,
+      totalBalance: transaction.amount * -1,
+    },
+  });
 
   sendTransactionEmail(
     user,

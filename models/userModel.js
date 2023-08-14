@@ -33,6 +33,25 @@ const userSchema = new mongoose.Schema({
     default: 0,
   },
 
+  totalDeposit: {
+    type: Number,
+    default: 0,
+  },
+
+  totalWithdrawal: {
+    type: Number,
+    default: 0,
+  },
+
+  pendingWithdrawal: {
+    type: Number,
+    default: 0,
+  },
+  pendingDeposit: {
+    type: Number,
+    default: 0,
+  },
+
   commission: {
     type: Number,
     default: 0,

@@ -154,7 +154,18 @@ exports.resetUsers = catchAsync(async (req, res, next) => {
 exports.resetUser = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.params.id);
 
-  await User.updateMany({ _id: req.params.id }, { $set: { totalBalance: 0 } });
+  await User.updateMany(
+    { _id: req.params.id },
+    {
+      $set: {
+        totalBalance: 0,
+        pendingDeposit: 0,
+        totalWithdrawal: 0,
+        pendingWithdrawal: 0,
+      },
+    }
+  );
+
   await Wallet.updateMany(
     { username: user.username },
     {

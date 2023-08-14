@@ -21,7 +21,7 @@ mongoose
       transaction.checkActive();
     };
 
-    checkActiveDeposits();
+    // checkActiveDeposits();
   })
   .catch((err) => {
     console.log({ database_error: err });
