@@ -604,7 +604,6 @@ exports.approveWithdrawal = catchAsync(async (req, res, next) => {
     $inc: {
       totalWithdrawal: transaction.amount * 1,
       pendingWithdrawal: transaction.amount * -1,
-      totalBalance: transaction.amount * -1,
     },
   });
 
