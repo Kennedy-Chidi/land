@@ -162,6 +162,7 @@ exports.resetUser = catchAsync(async (req, res, next) => {
         pendingDeposit: 0,
         totalWithdrawal: 0,
         pendingWithdrawal: 0,
+        totalDeposit: 0,
       },
     }
   );
