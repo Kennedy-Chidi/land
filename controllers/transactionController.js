@@ -414,14 +414,16 @@ const finishInterruptedActiveDeposit = async (
 
     const newActiveDeposit = await Active.findById(activeDeposit._id);
 
-    startActiveDeposit(
-      newActiveDeposit,
-      earning,
-      timeRemaining,
-      newActiveDeposit.planCycle * 1,
-      user,
-      next
-    );
+    if (newActiveDeposit) {
+      startActiveDeposit(
+        newActiveDeposit,
+        earning,
+        timeRemaining,
+        newActiveDeposit.planCycle * 1,
+        user,
+        next
+      );
+    }
   }, interval);
 };
 
