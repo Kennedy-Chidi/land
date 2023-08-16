@@ -638,7 +638,12 @@ exports.deleteTransaction = catchAsync(async (req, res, next) => {
 
     await User.findOneAndUpdate(
       { username: transaction.username },
-      { $inc: { totalBalance: transaction.amount * 1 } }
+      {
+        $inc: {
+          totalBalance: transaction.amount * 1,
+          pendingWithdrawal: transaction.amount * -1,
+        },
+      }
     );
   }
 
@@ -648,6 +653,15 @@ exports.deleteTransaction = catchAsync(async (req, res, next) => {
         pendingDeposit: transaction.amount * -1,
       },
     });
+
+    await User.findOneAndUpdate(
+      { username: transaction.username },
+      {
+        $inc: {
+          pendingDeposit: transaction.amount * -1,
+        },
+      }
+    );
   }
 
   await Transaction.findByIdAndDelete(req.params.id);
