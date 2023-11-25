@@ -62,56 +62,56 @@ exports.signup = catchAsync(async (req, res, next) => {
     await Related.create(data);
     createSendToken(user, 201, res);
   } else {
-    const signupResult = await Signup.find();
-    const signup = signupResult[0];
-    if (signup) {
-      //--------CHECK USER DOCUMENT-------------
-      if (signup.identity) {
-        if (req.files.profilePicture && req.files.idPicture) {
-          data.profilePicture = req.files.profilePicture[0].filename;
-          data.idPicture = req.files.idPicture[0].filename;
-        } else {
-          return next(
-            new AppError(`Please upload the necessary documents!`, 500)
-          );
-        }
-      }
+    // const signupResult = await Signup.find();
+    // const signup = signupResult[0];
+    // if (signup) {
+    //   //--------CHECK USER DOCUMENT-------------
+    //   if (signup.identity) {
+    //     if (req.files.profilePicture && req.files.idPicture) {
+    //       data.profilePicture = req.files.profilePicture[0].filename;
+    //       data.idPicture = req.files.idPicture[0].filename;
+    //     } else {
+    //       return next(
+    //         new AppError(`Please upload the necessary documents!`, 500)
+    //       );
+    //     }
+    //   }
 
-      //--------CHECK USER RESIDENCE-------------
-      if (signup.residence) {
-        if (
-          data.residentAddress1 == "" ||
-          data.residentDestrict == "" ||
-          data.residentZipCode == "" ||
-          data.residentState == "Select State" ||
-          data.residentCountry == "Select Country"
-        ) {
-          return next(
-            new AppError(`Please fill in all residential information!`, 500)
-          );
-        }
-      }
+    //   //--------CHECK USER RESIDENCE-------------
+    //   if (signup.residence) {
+    //     if (
+    //       data.residentAddress1 == "" ||
+    //       data.residentDestrict == "" ||
+    //       data.residentZipCode == "" ||
+    //       data.residentState == "Select State" ||
+    //       data.residentCountry == "Select Country"
+    //     ) {
+    //       return next(
+    //         new AppError(`Please fill in all residential information!`, 500)
+    //       );
+    //     }
+    //   }
 
-      //--------CHECK USER ORIGIN-------------
-      if (signup.origin) {
-        if (
-          data.originAddress1 == "" ||
-          data.originDestrict == "" ||
-          data.originZipCode == "" ||
-          data.originState == "Select State" ||
-          data.originCountry == "Select Country"
-        ) {
-          return next(
-            new AppError(`Please fill in all information of origin!`, 500)
-          );
-        }
-      }
+    //   //--------CHECK USER ORIGIN-------------
+    //   if (signup.origin) {
+    //     if (
+    //       data.originAddress1 == "" ||
+    //       data.originDestrict == "" ||
+    //       data.originZipCode == "" ||
+    //       data.originState == "Select State" ||
+    //       data.originCountry == "Select Country"
+    //     ) {
+    //       return next(
+    //         new AppError(`Please fill in all information of origin!`, 500)
+    //       );
+    //     }
+    //   }
 
-      //----------CHECK FOR EMAIL---------------
-      if (signup.email) {
-        data.suspension = true;
-      }
-    }
+    //   //----------CHECK FOR EMAIL---------------
+    //   if (signup.email) {
+    //     data.suspension = true;
+    //   }
+    // }
 
     //----------CHECK FOR REFERRAL---------------
     const referral = await User.findOne({ username: data.referredBy });
