@@ -98,6 +98,17 @@ exports.createTransaction = catchAsync(async (req, res, next) => {
         $inc: { totalBalance: data.amount * -1, totalDeposit: data.amount * 1 },
       });
 
+      const plan = await Plan.findOne({ planName: data.planName });
+
+      if (data.amount < plan.planMinimum) {
+        return next(
+          new AppError(
+            "The amount is less than the minimum amount for this plan!",
+            400
+          )
+        );
+      }
+
       data.reinvest = true;
       data.status = true;
       await History.create(data);
