@@ -76,6 +76,8 @@ exports.createTransaction = catchAsync(async (req, res, next) => {
     next();
   } else {
     if (data.fromBalance == "true") {
+      const plan = await Plan.findOne({ planName: data.planName });
+
       if (data.amount < plan.planMinimum) {
         return next(
           new AppError(
@@ -105,8 +107,6 @@ exports.createTransaction = catchAsync(async (req, res, next) => {
       await User.findByIdAndUpdate(data.user._id, {
         $inc: { totalBalance: data.amount * -1, totalDeposit: data.amount * 1 },
       });
-
-      const plan = await Plan.findOne({ planName: data.planName });
 
       data.reinvest = true;
       data.status = true;
