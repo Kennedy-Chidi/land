@@ -171,6 +171,16 @@ exports.createTransaction = catchAsync(async (req, res, next) => {
           }
         );
       } else {
+        const plan = await Plan.findOne({ planName: data.planName });
+
+        if (data.amount < plan.planMinimum) {
+          return next(
+            new AppError(
+              "The amount is less than the minimum amount for this plan!",
+              400
+            )
+          );
+        }
         await Transaction.create(data);
 
         await Wallet.findByIdAndUpdate(data.walletId, {
