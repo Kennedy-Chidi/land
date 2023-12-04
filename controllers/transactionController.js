@@ -76,6 +76,14 @@ exports.createTransaction = catchAsync(async (req, res, next) => {
     next();
   } else {
     if (data.fromBalance == "true") {
+      if (data.amount < plan.planMinimum) {
+        return next(
+          new AppError(
+            "The amount is less than the minimum amount for this plan!",
+            400
+          )
+        );
+      }
       const wallet = await Wallet.findById(data.walletId);
       if (data.amount > wallet.balance) {
         return next(
@@ -99,15 +107,6 @@ exports.createTransaction = catchAsync(async (req, res, next) => {
       });
 
       const plan = await Plan.findOne({ planName: data.planName });
-
-      if (data.amount < plan.planMinimum) {
-        return next(
-          new AppError(
-            "The amount is less than the minimum amount for this plan!",
-            400
-          )
-        );
-      }
 
       data.reinvest = true;
       data.status = true;
