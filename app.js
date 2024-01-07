@@ -95,12 +95,12 @@ app.use("/api/transactions", transactionRouter);
 app.use("/api/users", userRouter);
 app.use("/api/wallet", walletRouter);
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "/dist/")));
-  app.get("*", (req, res) => {
-    res.sendFile(__dirname + "/dist/index.html");
-  });
-}
+// if (process.env.NODE_ENV === "production") {
+//   app.use(express.static(path.join(__dirname, "/dist/")));
+//   app.get("*", (req, res) => {
+//     res.sendFile(__dirname + "/dist/index.html");
+//   });
+// }
 
 app.use(globalErrorHandler);
 
